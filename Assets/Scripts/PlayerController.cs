@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -10,8 +12,16 @@ public class PlayerController : MonoBehaviour
     [Header("SFX")]
     [SerializeField] private AudioClip bounceClip;      // 점프 사운드
 
+    [Header("VFX")]
+    [SerializeField] private Material playerMaterial;   // 플레이어에 적용하는 material 원본
+    [SerializeField] private Transform splashImage;     // 플레이어가 플랫폼과 충돌했을 때 플랫폼에 생성하는 이미지
+    [SerializeField] private ParticleSystem[] splashParticles;  // 플레이어가 플랫폼과 충동했을 때 플랫폼에 생성하는 파티클
+
     private new Rigidbody rigidbody;
     private AudioSource audioSource;
+
+    // Splash Image, Particle의 생성 위치 보정값
+    private Vector3 splashWeight = new Vector3(0, 0.22f, 0.1f);
 
     private void Awake()
     {
@@ -29,6 +39,10 @@ public class PlayerController : MonoBehaviour
         rigidbody.velocity = new Vector3(0, bounceForce, 0);
         // 사운드 재생 : Bounce
         PlaySound(bounceClip);
+        // 충돌 효과 재생 : Splash Image
+        OnSplashImage(collision.transform);
+        // 충돌 효과 재생 : Splash Particle
+        OnSplashParticle();
     }
 
     private void PlaySound(AudioClip clip)
@@ -36,5 +50,35 @@ public class PlayerController : MonoBehaviour
         audioSource.Stop();
         audioSource.clip = clip;
         audioSource.Play();
+    }
+    private void OnSplashImage(Transform target)
+    {
+        // 스플래시 이미지를 생성하고, target의 자식으로 배치
+        Transform image = Instantiate(splashImage, target);
+        // 스플래시 이미지의 위치, 회전, 크기 설정
+        image.position          = transform.position - splashWeight;
+        image.localEulerAngles  = new Vector3(0, 0, Random.Range(0, 360));
+        float randomScale       = Random.Range(0.3f, 0.5f);
+        image.localScale        = new Vector3(randomScale, randomScale, 1);
+        // 스플래시 이미지의 색상 설정
+        image.GetComponent<MeshRenderer>().material.color = playerMaterial.color;
+    }
+
+    void OnSplashParticle()
+    {
+        // 현재 비활성화 상태인 스플래시 파티클 중 하나를 선택해 활성화 및 재생
+        for (int i = 0; i < splashParticles.Length; i++)
+        {
+            if (splashParticles[i].gameObject.activeSelf) continue;
+
+            // 스플래시 파티클 활성화
+            splashParticles[i].gameObject.SetActive(true);
+            // 스플래시 파티클 위치 설정
+            splashParticles[i].transform.position = transform.position - splashWeight;
+            // 스플래시 파티클 색상 설정
+            ParticleSystem.MainModule mainModule    = splashParticles[i].main;
+            mainModule.startColor                   = playerMaterial.color;
+            break;
+        }
     }
 }
