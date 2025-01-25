@@ -11,10 +11,11 @@ GameObject:
   - component: {fileID: 6150367794028829322}
   - component: {fileID: 4430354112756570473}
   - component: {fileID: 3936283076227277774}
-  - component: {fileID: -4026503986489299684}
-  - component: {fileID: 3390020538748986358}
+  - component: {fileID: 5772588015730047324}
+  - component: {fileID: -3997693591478142738}
+  - component: {fileID: 946909666388991018}
   m_Layer: 0
-  m_Name: Octagon_NonBreak
+  m_Name: Octagon_Break
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c5a31eb6b72efea48bee2762cb1c6877, type: 2}
+  - {fileID: 2100000, guid: 10b284c49d463804db377f45fdd6316a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -85,7 +86,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &-4026503986489299684
+--- !u!64 &5772588015730047324
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -107,7 +108,7 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -8159816889557737838, guid: 26f01fd4d309a6740b40cf865fa08467, type: 3}
---- !u!54 &3390020538748986358
+--- !u!54 &-3997693591478142738
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -134,3 +135,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &946909666388991018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6789839739850349605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f936888c8f4e9a4a9b857baafbe67bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 1.5

@@ -1,7 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -43,6 +40,14 @@ public class PlayerController : MonoBehaviour
         OnSplashImage(collision.transform);
         // 충돌 효과 재생 : Splash Particle
         OnSplashParticle();
+        OnJumpProcess(collision);
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (rigidbody.velocity.y > 0) return;
+        //Debug.Log("OnCollisionStay");
+        OnJumpProcess(collision);
     }
 
     private void PlaySound(AudioClip clip)
@@ -51,6 +56,7 @@ public class PlayerController : MonoBehaviour
         audioSource.clip = clip;
         audioSource.Play();
     }
+
     private void OnSplashImage(Transform target)
     {
         // 스플래시 이미지를 생성하고, target의 자식으로 배치
@@ -64,7 +70,7 @@ public class PlayerController : MonoBehaviour
         image.GetComponent<MeshRenderer>().material.color = playerMaterial.color;
     }
 
-    void OnSplashParticle()
+    private void OnSplashParticle()
     {
         // 현재 비활성화 상태인 스플래시 파티클 중 하나를 선택해 활성화 및 재생
         for (int i = 0; i < splashParticles.Length; i++)
@@ -80,5 +86,17 @@ public class PlayerController : MonoBehaviour
             mainModule.startColor                   = playerMaterial.color;
             break;
         }
+    }
+
+    private void OnJumpProcess(Collision collision)
+    {
+        // 발판(Platform)에 부딪히면 y 속력을 bounceForce로 설정
+        rigidbody.velocity = new Vector3(0, bounceForce, 0);
+        // 사운드 재생 : Bounce
+        PlaySound(bounceClip);
+        // 충돌 효과 재생 : Splash Image
+        OnSplashImage(collision.transform);
+        // 충돌 효과 재생 : Splash Particle
+        OnSplashParticle();
     }
 }
