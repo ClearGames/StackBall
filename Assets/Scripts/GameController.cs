@@ -44,7 +44,8 @@ public class GameController : MonoBehaviour
     {
         while (true)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) ||
+                PlayerPrefs.GetInt("DEACTIVATEMAIN") == 1)
             {
                 GameStart();
                 yield break;
