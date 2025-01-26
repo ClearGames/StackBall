@@ -20,6 +20,10 @@ public class UIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textCurrentScore;
     [SerializeField] private TextMeshProUGUI textHighScore;
 
+    [Header("GameClear")]
+    [SerializeField] private GameObject gameClearPanel;
+    [SerializeField] private TextMeshProUGUI textLevelCompleted;
+
     private void Awake()
     {
         currentLevel.text = (PlayerPrefs.GetInt("LEVEL") + 1).ToString();
@@ -40,6 +44,12 @@ public class UIController : MonoBehaviour
 
         // GameOver -> Main UI 보이도록 설정
         PlayerPrefs.SetInt("DEACTIVATEMAIN", 0);
+    }
+
+    public void GameClear()
+    {
+        textLevelCompleted.text = $"LEVEL {PlayerPrefs.GetInt("LEVEL")+1}\nCOMPLETED!";
+        gameClearPanel.SetActive(true);
     }
 
     public float LevelProgressBar { set => levelProgressBar.fillAmount = value; }

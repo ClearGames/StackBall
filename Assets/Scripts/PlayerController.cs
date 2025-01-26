@@ -80,12 +80,22 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+
+        // 마지막 발판과 충돌했을 때 게임 클리어
+        if( collision.gameObject.CompareTag("LastPlatform") && gameController.IsGamePlay)
+        {
+            // 파워 모드의 게이지, 이펙트 비활성화
+            playerPowerMode.DeactivateAll();
+
+            // GameController에서 게임 클리어 했을 때 처리
+            gameController.GameClear();
+        }
     }
 
     private void OnCollisionStay(Collision collision)
     {
         if (rigidbody.velocity.y > 0) return;
-        if (isClicked) return;
+        if (isClicked && !collision.gameObject.CompareTag("LastPlatform")) return;
 
         //Debug.Log("OnCollisionStay");
         OnJumpProcess(collision);

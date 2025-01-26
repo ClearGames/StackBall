@@ -9,9 +9,11 @@ public class GameController : MonoBehaviour
 
     [Header("SFX")]
     [SerializeField] private AudioClip gameOverCliip;
+    [SerializeField] private AudioClip gameClearClip;
 
     [Header("VFX")]
     [SerializeField] GameObject gameOverEffect;
+    [SerializeField] GameObject gameClearEffect;
 
     private RandomColor randomColor;
     private AudioSource audioSource;
@@ -76,6 +78,24 @@ public class GameController : MonoBehaviour
         // 최고 점수 데이터 업데이트
         UpdateHighScore();
         uiController.GameOver(currentScore);
+
+        // 마우스 왼쪽 버튼 누르면 씬 재시작
+        StartCoroutine(nameof(SceneLoadToOnClick));
+    }
+
+    public void GameClear()
+    {
+        IsGamePlay = false;
+
+        // SFX, VFX 설정 및 재생
+        audioSource.clip = gameClearClip;
+        audioSource.Play();
+        gameClearEffect.SetActive(true);
+
+        // 최고 점수 데이터 업데이트
+        UpdateHighScore();
+        uiController.GameClear();
+        PlayerPrefs.SetInt("LEVEL", PlayerPrefs.GetInt("LEVEL") + 1);
 
         // 마우스 왼쪽 버튼 누르면 씬 재시작
         StartCoroutine(nameof(SceneLoadToOnClick));
