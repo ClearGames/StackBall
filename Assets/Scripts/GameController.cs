@@ -7,7 +7,14 @@ public class GameController : MonoBehaviour
     [SerializeField] private PlatformSpawner platformSpawner;
     [SerializeField] private UIController uiController;
 
+    [Header("SFX")]
+    [SerializeField] private AudioClip gameOverCliip;
+
+    [Header("VFX")]
+    [SerializeField] GameObject gameOverEffect;
+
     private RandomColor randomColor;
+    private AudioSource audioSource;
 
     private int brokePlatformCount = 0;     // 현재 스테이지에서 부서진 플랫폼 개수
     private int totalPlatformCount;         // 전체 플랫폼 개수
@@ -17,6 +24,8 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
+
         // 현재 스테이지에서 사용하는 플랫폼 생성
         totalPlatformCount = platformSpawner.SpawnPlatforms();
 
@@ -52,5 +61,44 @@ public class GameController : MonoBehaviour
 
         currentScore += addedScore;
         uiController.CurrentScore = currentScore;
+    }
+
+    public void GameOver(Vector3 position)
+    {
+        IsGamePlay = false;
+
+        // SFX, VFX 설정 및 재생
+        audioSource.clip = gameOverCliip;
+        audioSource.Play();
+        gameOverEffect.transform.position = position;
+        gameOverEffect.SetActive(true);
+
+        // 최고 점수 데이터 업데이트
+        UpdateHighScore();
+        uiController.GameOver(currentScore);
+
+        // 마우스 왼쪽 버튼 누르면 씬 재시작
+        StartCoroutine(nameof(SceneLoadToOnClick));
+    }
+
+    private void UpdateHighScore()
+    {
+        // 현재 점수가 최고 점수보다 높으면 현재 점수를 최고 점수로 설정
+        if(currentScore > PlayerPrefs.GetInt("HIGHSCORE"))
+        {
+            PlayerPrefs.SetInt("HIGHSCORE", currentScore);
+        }
+    }
+
+    private IEnumerator SceneLoadToOnClick()
+    {
+        while (true)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+            }
+            yield return null;
+        }
     }
 }

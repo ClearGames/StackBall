@@ -57,23 +57,6 @@ public class PlayerController : MonoBehaviour
         // 마우스 클릭 중일 때 (플랫폼과 충돌 & 플랫폼 파괴)
         else
         {
-            //if(collision.gameObject.CompareTag("BreakPart"))
-            //{
-            //    PlatformController platform = collision.transform.parent.GetComponent<PlatformController>();
-
-            //    if(platform.IsCollision == false)
-            //    {
-            //        platform.BreakAllParts();
-            //        // 사운드 재생 : normal break or power break
-            //        PlaySound(normalBreakClip);
-            //        gameController.OnCollisionWithPlatform();
-            //    }
-            //}else if (collision.gameObject.CompareTag("NonBreakPart"))
-            //{
-            //    // 물리, 중력을 받지 않도록 설정
-            //    rigidbody.isKinematic = false;
-            //    Debug.Log("GameOver");
-            //}
             if (playerPowerMode.IsPowerMode)
             {
                 if (collision.gameObject.CompareTag("BreakPart") ||
@@ -90,8 +73,10 @@ public class PlayerController : MonoBehaviour
                 }
                 else if (collision.gameObject.CompareTag("NonBreakPart"))
                 {
-                    rigidbody.isKinematic = false;
-                    Debug.Log("GameOver");
+                    //rigidbody.isKinematic = false;
+                    //Debug.Log("GameOver");
+                    gameController.GameOver(transform.position);
+                    gameObject.SetActive(false);
                 }
             }
         }
