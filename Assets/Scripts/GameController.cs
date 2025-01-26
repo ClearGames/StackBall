@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
 
     private int brokePlatformCount = 0;     // 현재 스테이지에서 부서진 플랫폼 개수
     private int totalPlatformCount;         // 전체 플랫폼 개수
+    private int currentScore = 0;           // 현재 점수
 
     public bool IsGamePlay { private set; get; } = false;
 
@@ -48,5 +49,8 @@ public class GameController : MonoBehaviour
     {
         brokePlatformCount++;
         uiController.LevelProgressBar = (float)brokePlatformCount / (float)totalPlatformCount;
+
+        currentScore += addedScore;
+        uiController.CurrentScore = currentScore;
     }
 }
