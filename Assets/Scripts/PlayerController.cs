@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     [Header("SFX")]
     [SerializeField] private AudioClip bounceClip;      // 점프 사운드
     [SerializeField] private AudioClip normalBreakClip; // 일반 상태에서 플랫폼을 파괴하는 사운드
+    [SerializeField] private AudioClip powerBreakClip;  // 파워 상태에서 플랫폼을 파괴하는 사운드
 
     [Header("VFX")]
     [SerializeField] private Material playerMaterial;   // 플레이어에 적용하는 material 원본
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviour
 
     private new Rigidbody rigidbody;
     private AudioSource audioSource;
+    private PlayerPowerMode playerPowerMode;
 
     // Splash Image, Particle의 생성 위치 보정값
     private Vector3 splashWeight = new Vector3(0, 0.22f, 0.1f);
@@ -30,6 +32,7 @@ public class PlayerController : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
+        playerPowerMode = GetComponent<PlayerPowerMode>();
     }
 
     private void Update()
@@ -38,6 +41,8 @@ public class PlayerController : MonoBehaviour
 
         UpdateMouseButton();
         UpdateDropToSmash();
+
+        playerPowerMode.UpdatePowerMode(isClicked);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -52,22 +57,42 @@ public class PlayerController : MonoBehaviour
         // 마우스 클릭 중일 때 (플랫폼과 충돌 & 플랫폼 파괴)
         else
         {
-            if(collision.gameObject.CompareTag("BreakPart"))
-            {
-                PlatformController platform = collision.transform.parent.GetComponent<PlatformController>();
+            //if(collision.gameObject.CompareTag("BreakPart"))
+            //{
+            //    PlatformController platform = collision.transform.parent.GetComponent<PlatformController>();
 
-                if(platform.IsCollision == false)
-                {
-                    platform.BreakAllParts();
-                    // 사운드 재생 : normal break or power break
-                    PlaySound(normalBreakClip);
-                    gameController.OnCollisionWithPlatform();
-                }
-            }else if (collision.gameObject.CompareTag("NonBreakPart"))
+            //    if(platform.IsCollision == false)
+            //    {
+            //        platform.BreakAllParts();
+            //        // 사운드 재생 : normal break or power break
+            //        PlaySound(normalBreakClip);
+            //        gameController.OnCollisionWithPlatform();
+            //    }
+            //}else if (collision.gameObject.CompareTag("NonBreakPart"))
+            //{
+            //    // 물리, 중력을 받지 않도록 설정
+            //    rigidbody.isKinematic = false;
+            //    Debug.Log("GameOver");
+            //}
+            if (playerPowerMode.IsPowerMode)
             {
-                // 물리, 중력을 받지 않도록 설정
-                rigidbody.isKinematic = false;
-                Debug.Log("GameOver");
+                if (collision.gameObject.CompareTag("BreakPart") ||
+                    collision.gameObject.CompareTag("NonBreakPart"))
+                {
+                    OnCollisionWithBreakPart(collision, powerBreakClip, 2);
+                }
+            }
+            else
+            {
+                if (collision.gameObject.CompareTag("BreakPart"))
+                {
+                    OnCollisionWithBreakPart(collision, normalBreakClip, 1);
+                }
+                else if (collision.gameObject.CompareTag("NonBreakPart"))
+                {
+                    rigidbody.isKinematic = false;
+                    Debug.Log("GameOver");
+                }
             }
         }
     }
@@ -75,6 +100,8 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionStay(Collision collision)
     {
         if (rigidbody.velocity.y > 0) return;
+        if (isClicked) return;
+
         //Debug.Log("OnCollisionStay");
         OnJumpProcess(collision);
     }
@@ -146,6 +173,19 @@ public class PlayerController : MonoBehaviour
         if(Input.GetMouseButton(0) && isClicked)
         {
             rigidbody.velocity = new Vector3(0, dropForce, 0);
+        }
+    }
+
+    private void OnCollisionWithBreakPart(Collision collision, AudioClip clip, int addedScore)
+    {
+        // 부딪힌 플랫폼의 모든 조각 날리기
+        PlatformController platform = collision.transform.parent.GetComponent<PlatformController>();
+
+        if (platform.IsCollision == false)
+        {
+            platform.BreakAllParts();
+            PlaySound(clip);
+            gameController.OnCollisionWithPlatform(addedScore);
         }
     }
 }
