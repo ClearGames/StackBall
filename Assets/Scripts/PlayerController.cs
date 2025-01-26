@@ -61,6 +61,7 @@ public class PlayerController : MonoBehaviour
                     platform.BreakAllParts();
                     // 사운드 재생 : normal break or power break
                     PlaySound(normalBreakClip);
+                    gameController.OnCollisionWithPlatform();
                 }
             }else if (collision.gameObject.CompareTag("NonBreakPart"))
             {
