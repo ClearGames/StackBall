@@ -366,7 +366,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bounceForce: 5
+  dropForce: -10
   bounceClip: {fileID: 8300000, guid: 2c5292ba5cf254919a6b9e2b18e04f49, type: 3}
+  normalBreakClip: {fileID: 8300000, guid: 29bde6326b4c34ad8a12da475f79b50a, type: 3}
   playerMaterial: {fileID: 2100000, guid: acb5e65060f470046b4e1f53906fd384, type: 2}
   splashImage: {fileID: 5555491560430566744, guid: f0f22acd7812e624c93055d393942101, type: 3}
   splashParticles:
