@@ -15,8 +15,8 @@ public class PlatformSpawner : MonoBehaviour
         // 같은 모양의 플랫폼만 출력되도록 플랫폼 셋 선택
         Transform[] platforms = SetupPlatformFigure();
         // 플랫폼 생성 개수 설정
-        //int platformCount = SetupPlatformCount();
-        int platformCount = 10;
+        int platformCount = SetupPlatformCount();
+        //int platformCount = 10;
         // 선택된 플랫폼들의 시작, 종료 인덱스 (난이도 조절)
         (int,int) indexs = SetupStartAndEndIndex(platforms);
 

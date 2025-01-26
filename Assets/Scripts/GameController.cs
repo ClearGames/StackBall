@@ -28,6 +28,9 @@ public class GameController : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
 
+        currentScore = PlayerPrefs.GetInt("CURRENTSCORE");
+        uiController.CurrentScore = currentScore;
+
         // 현재 스테이지에서 사용하는 플랫폼 생성
         totalPlatformCount = platformSpawner.SpawnPlatforms();
 
@@ -79,6 +82,8 @@ public class GameController : MonoBehaviour
         UpdateHighScore();
         uiController.GameOver(currentScore);
 
+        PlayerPrefs.SetInt("CURRNETSCORE", 0);
+
         // 마우스 왼쪽 버튼 누르면 씬 재시작
         StartCoroutine(nameof(SceneLoadToOnClick));
     }
@@ -96,6 +101,7 @@ public class GameController : MonoBehaviour
         UpdateHighScore();
         uiController.GameClear();
         PlayerPrefs.SetInt("LEVEL", PlayerPrefs.GetInt("LEVEL") + 1);
+        PlayerPrefs.SetInt("CURRENTSCORE", currentScore);
 
         // 마우스 왼쪽 버튼 누르면 씬 재시작
         StartCoroutine(nameof(SceneLoadToOnClick));
@@ -120,5 +126,16 @@ public class GameController : MonoBehaviour
             }
             yield return null;
         }
+    }
+
+    private void OnApplicationQuit()
+    {
+        PlayerPrefs.SetInt("CURRENTSCORE", 0);
+    }
+
+    [ContextMenu("Reset All PlayerPrefs")]
+    private void ResetAll()
+    {
+        PlayerPrefs.DeleteAll();
     }
 }
